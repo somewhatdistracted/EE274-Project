@@ -1,0 +1,3 @@
+[submodule "stanford_compression_library"]
+	path = stanford_compression_library
+	url = https://github.com/kedartatwawadi/stanford_compression_library.git
