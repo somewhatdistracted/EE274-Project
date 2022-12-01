@@ -18,6 +18,7 @@ module huff_encoder
     output reg [ENC_MAX_LEN_WIDTH-1:0] enc_len
 );
 
+    /*
     reg [ENC_MAX_WIDTH-1:0] enc_lut [NUM_SYMBOLS-1:0];
     reg [ENC_MAX_LEN_WIDTH-1:0] enc_len_lut [NUM_SYMBOLS-1:0];
 
@@ -39,5 +40,31 @@ module huff_encoder
             enc_len => 0;
         end
     end
+    */
+
+    reg [ENC_MAX_WIDTH-1:0] enc_out_preserialization [PARALLELIZATION-1:0];
+    reg [ENC_MAX_LEN_WIDTH-1:0] enc_out_ps_len [PARALLELIZATION-1:0];
+
+    genvar i;
+    generate
+        for (i = 0; i < PARALLELIZATION; i++) begin : enc_atoms
+            huff_encoder_atom #(
+                .SYMBOL_WIDTH(SYMBOL_WIDTH),
+                .ENC_MAX_WIDTH(ENC_MAX_WIDTH),
+                .ENC_MAX_LEN_WIDTH(ENC_MAX_LEN_WIDTH),
+                .NUM_SYMBOLS(NUM_SYMBOLS)
+            ) enc_atom (
+                .clk(clk),
+                .rst_n(rst_n),
+                .config_en(config_en),
+                .symbol(symbols_in[((i+1)*SYMBOL_WIDTH)-1:(i*SYMBOL_WIDTH)]),
+                .config_enc(config_enc),
+                .config_enc_len(config_enc_len),
+                .config_select(config_select),
+                .enc(enc_out_preserialization[i]),
+                .enc_len(enc_out_ps_len[i])
+            );
+        end
+    endgenerate
 
 endmodule
