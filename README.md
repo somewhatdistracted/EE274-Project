@@ -8,15 +8,24 @@ While we often talk about compression algorithms in the software domain (or at l
 
 Full references are linked and listed at the bottom. The first few references are materials related to Huffman coders and the last few correspond to rANS.
 
+I'll further note that since Huffman coding has been around for a while, many papers discussing straightforward implementations are fairly old (as is the case for the first two papers). This first paper discusses a finite-state machine implementation of Huffman decoders, which relies on the prefix-free property of Huffman codes to decode encoded symbols via state evolution. The prefix-free property makes this possible by guaranteeing that the state machine will not interpret a symbol stop erroneously even if it parses the bitstream one bit at a time. While not a very throughput-efficient implementation, it is quite space-efficient, and I ended up using it for the Huffman decoder to keep it interesting.
+
 [An efficient finite-state machine implementation of Huffman decoders](#1)
 
-I'll further note that since Huffman coding has been around for a while, many papers discussing straightforward implementations are fairly old (as is the case for the next one).
+This next paper is a similar space-efficiency optimization technique for Huffman decoders, and though I didn't end up using it, the paper is interesting to read.
 
 [Design and hardware implementation of a memory efficient Huffman decoding](#2)
 
+Finally, this last Huffman-related paper is a bit overspecific to a certain implementation of a real-time Huffman coder, but it has some useful discussion related to the serialization of the variable-length Huffman encoded symbols into a fixed-size buffer.
+
+[Design and implementation of static Huffman encoding hardware using a parallel shifting algorithm](#3)
+
 After the huge amount of existing resources on hardware Huffman coders, I was a little surprised to see rANS discussion mainly kept in the software domain. I'm still looking for materials here, so additional suggestions are welcome!
 
-[An FPGA-Based LOCO-ANS Implementation for Lossless and Near-Lossless Image Compression Using High-Level Synthesis](#3)
+[An FPGA-Based LOCO-ANS Implementation for Lossless and Near-Lossless Image Compression Using High-Level Synthesis](#4)
+
+Here's a few more papers I've looked at that go through software implementations but that have some application to hardware:
+
 
 
 ## Methods
@@ -34,10 +43,10 @@ Supporting the hardware implementation of the Huffman coder (and the rANS coder 
 
 #### Huffman Coder
 - [x] Implemented atomic encoder (one symbol at a time)
-- [ ] Test coverage of atomic encoder
+- [x] Test coverage of atomic encoder
 - [x] Implemented decoder
 - [ ] Test coverage of decoder
-- [ ] Implemented parallel coder
+- [x] Implemented parallel coder
 - [ ] Test coverage of parallel coder
 
 #### Test Harness
@@ -45,14 +54,15 @@ Supporting the hardware implementation of the Huffman coder (and the rANS coder 
  - [ ] Make/script to run gold/sim and check for correctness
 
 #### rANS
-- [ ] Not scoped out yet.
+- [ ] Implemented simple atomic encoder
+- [ ] Implemented decoder
 
 ## Timeline
 
 #### Week of Nov. 7:
  - Started Huffman 
- 
- 
+
+#### TODO Update
  
 ## References (Fuller Version)
 
@@ -63,4 +73,7 @@ Vikram Iyengar, Krishnendu Chakrabarty, "An efficient finite-state machine imple
 R. Hashemian, "Design and hardware implementation of a memory efficient Huffman decoding," in IEEE Transactions on Consumer Electronics, vol. 40, no. 3, pp. 345-352, Aug. 1994, doi: 10.1109/30.320814.
 
 <a id="3">[3]</a> 
+Taeyeon Lee and Jaehong Park, "Design and implementation of static Huffman encoding hardware using a parallel shifting algorithm," in IEEE Transactions on Nuclear Science, vol. 51, no. 5, pp. 2073-2080, Oct. 2004, doi: 10.1109/TNS.2004.834715.
+
+<a id="4">[4]</a> 
 T. Alonso, G. Sutter, and J. E. López de Vergara, “An FPGA-Based LOCO-ANS Implementation for Lossless and Near-Lossless Image Compression Using High-Level Synthesis,” Electronics, vol. 10, no. 23, p. 2934, Nov. 2021, doi: 10.3390/electronics10232934. [Online]. Available: http://dx.doi.org/10.3390/electronics10232934
