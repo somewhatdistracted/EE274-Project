@@ -21,6 +21,12 @@ After the huge amount of existing resources on hardware Huffman coders, I was a 
 
 ## Methods
 
+For this project, I am implementing both a static (though generally reprogrammable) Huffman coder -- mostly as a "warmup" of sorts -- and an rANS coder in SystemVerilog.
+
+The Huffman implementation is fairly simple, but still worth explaining, as it illustrates some of the concerns in hardware design. Encoding is straightforward: we assume that we have access to an externally-supplied stream of symbols, then we split these symbols many ways and encode them in parallel via lookup table. Doing this in hardware allows for this parallelization (though SIMD instructions manage similarly), and the lookup table will generally have access times equivalent or better than a generic CPU's cache access time. Lastly, the main important concern for the encoding side is re-serializing the data for storage/communication and eventual decoding. In my code, parallelized encoding is done in the `huff_encoder_atom` blocks, which are managed by the more general `huff_encoder` block, which coordinates the atoms and manages data flow.
+
+Next is decoding for the Huffman coder. While there are many ways of implementing a Huffman decoder (one straightforward option would be to use a lookup table similar to the encoder), I was drawn to an old [solution](#1) that used a finite state machine to do the decoding, using the prefix-free property of Huffman codes to read the bitstream bit-by-bit and parse out symbols via state evolution. It's worth noting that this isn't a particularly throughput-optimized implementation (in contrast to the encoder). Instead, this implementation is designed more for logical simplicity / space efficiency. I chose it instead of a repeat of the LUT-based solution to illustrate (and practice) the range of solutions in this space.
+
 
 
 ## Progress
@@ -29,10 +35,14 @@ After the huge amount of existing resources on hardware Huffman coders, I was a 
 #### Huffman Coder
 - [x] Implemented atomic encoder (one symbol at a time)
 - [ ] Test coverage of atomic encoder
-- [ ] Implemented atomic decoder
-- [ ] Test coverage of atomic decoder
+- [x] Implemented decoder
+- [ ] Test coverage of decoder
 - [ ] Implemented parallel coder
 - [ ] Test coverage of parallel coder
+
+#### Test Harness
+ - [ ] Python code
+ - [ ] Python code to check hardware implementation against stanford_compression_library
 
 #### rANS
 - [ ] Not scoped out yet.
