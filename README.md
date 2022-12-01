@@ -27,7 +27,7 @@ The Huffman implementation is fairly simple, but still worth explaining, as it i
 
 Next is decoding for the Huffman coder. While there are many ways of implementing a Huffman decoder (one straightforward option would be to use a lookup table similar to the encoder), I was drawn to an old [solution](#1) that used a finite state machine to do the decoding, using the prefix-free property of Huffman codes to read the bitstream bit-by-bit and parse out symbols via state evolution. It's worth noting that this isn't a particularly throughput-optimized implementation (in contrast to the encoder). Instead, this implementation is designed more for logical simplicity / space efficiency. I chose it instead of a repeat of the LUT-based solution to illustrate (and practice) the range of solutions in this space.
 
-Supporting the hardware implementation of the Huffman coder (and the rANS coder that follows), I've been working on a test harness that instantiates a functionally equivalent coder using the [stanford_compression_library](stanford_compression_library) and compares the encoded and decoded data to guarantee the functionality of the hardware implementation.
+Supporting the hardware implementation of the Huffman coder (and the rANS coder that follows), I've been working on a test harness that instantiates a functionally equivalent coder using the [stanford_compression_library](https://github.com/kedartatwawadi/stanford_compression_library/) and compares the encoded and decoded data to guarantee the functionality of the hardware implementation.
 
 ## Progress
 ##### or see Timeline for chronological details
