@@ -38,6 +38,24 @@ Next is decoding for the Huffman coder. While there are many ways of implementin
 
 Supporting the hardware implementation of the Huffman coder (and the rANS coder that follows), I've been working on a test harness that instantiates a functionally equivalent coder using the [stanford_compression_library](https://github.com/kedartatwawadi/stanford_compression_library/) and compares the encoded and decoded data to guarantee the functionality of the hardware implementation.
 
+## Optimization demo
+
+```python
+def rans_base_encode_step(x,s):
+   x_next = (x//freq[s])*M + cumul[s] + x%freq[s]
+   return x_next
+   
+def rans_base_encode_step(x,s):
+   div = int(x*inv_freq[s])
+   x_next = M*div + cumul[s] + x - div*freq[s]
+   return x_next
+   
+def rans_base_encode_step(x,s):
+   div = int(x*inv_freq[s])
+   x_next = div<<r + cumul[s] + x - div*freq[s]
+   return x_next
+```
+
 ## Progress
 ##### or see Timeline for chronological details
 
