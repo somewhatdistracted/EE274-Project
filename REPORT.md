@@ -57,7 +57,11 @@ Next is decoding for the Huffman coder. While there are many ways of implementin
 
 In more concrete terms, the decoder works by reading the input encoded data bit-by-bit. As each bit is read, it is appended to an internal state of the decoder. As soon as the decoder state matches a known encoding, the state is reset and the encoding is copied to the output.
 
-TODO: Expand on self-synchronizing parallelization.
+Furthermore, I learned from [this paper](#5) that Huffman codes have a property (in expectation, and we can design for it) called *self-synchronization*, which enables a neat way of doing parallel decoding. Basically, if a decoder of a self-synchronizing code starts decoding at a random point in the bitstream, we expect that it will -- after a few erroneous decodings -- start decoding the actual symbols of the code. I borrowed the following figure from the paper which helps illustrate the concept:
+
+![self-synchronizing diagram](imgs/huff_self_synchronization.png)
+
+What this implies is that we can parallelize Huffman decoding, even if we don't know the encoding splits. Relying on this property, we have a bunch of decoders start decoding at evenly spaced intervals, and let them decode into each other's intervals. Then we stitch the actual decoded symbols back together starting at the points where two decoders agree on a decoding. I wasn't able to get this type of parallel decoding working in the current implementation, but I'll update this if I get it working.
 
 ### rANS
 
