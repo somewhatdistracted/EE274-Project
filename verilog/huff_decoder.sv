@@ -47,12 +47,12 @@ module huff_decoder
                 end
             end else begin
                 // state was 0, meaning FSM reset.
-                state => 1;
+                state <= 1;
             end
         end else begin
-            state => 0;
-            decoded_symbols => 0;
-            symbol_cnt => 0;
+            state <= 0;
+            decoded_symbols <= 0;
+            symbol_cnt <= 0;
         end
     end
 

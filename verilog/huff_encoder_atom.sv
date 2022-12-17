@@ -25,17 +25,17 @@ module huff_encoder_atom
             if (config_en == 1'b1) begin
                 enc_lut[config_select] <= config_enc;
                 enc_len_lut[config_select] <= config_enc_len;
-                enc => 0;
-                enc_len => 0;
+                enc <= 0;
+                enc_len <= 0;
             end else begin
-                enc => enc_lut[symbol];
-                enc_len => enc_len_lut[symbol];
+                enc <= enc_lut[symbol];
+                enc_len <= enc_len_lut[symbol];
             end
         end else begin
-            enc_lut => 0;
-            enc_len_lut => 0;
-            enc => 0;
-            enc_len => 0;
+            enc_lut <= 0;
+            enc_len_lut <= 0;
+            enc <= 0;
+            enc_len <= 0;
         end
     end
 

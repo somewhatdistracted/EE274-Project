@@ -65,12 +65,12 @@ module huff_encoder
     always_ff @(posedge clk) begin
         if (rst_n) begin
             // normal operation
-            enc_out = enc_out_serial[PARALLELIZATION-1];
-            enc_len_out = enc_len_out_serial[PARALLELIZATION-2];
+            enc_out <= enc_out_serial[PARALLELIZATION-1];
+            enc_len_out <= enc_len_out_serial[PARALLELIZATION-2];
         end else begin
             // reset
-            enc_out => 0;
-            enc_len_out => 0;
+            enc_out <= 0;
+            enc_len_out <= 0;
         end
     end
 
