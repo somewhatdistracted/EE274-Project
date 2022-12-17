@@ -1,5 +1,5 @@
 # Hardware Implementations of Huffman/rANS coders.
-(note: this used to be the milestone, but I've moved that [here](MILESTONE.md) and tried to refactor this document as a bit more of a general intro document to the repo, with some guidance for navigation and usage.
+(note: this used to be the milestone, but I've moved that [here](MILESTONE.md) and tried to refactor this document as a bit more of a general intro document to the repo, with some guidance for navigation and usage.)
 
 While we often talk about compression algorithms in the software domain (or at least we have in EE274), in practice many compression schemes are implemented in hardware due to the ubiquity of data compression and the corresponding performance gains of hardware. Examples of common compression schemes implemented in hardware are Huffman codes, HEIC, JPEG, AV1, and LZ77/LZW (as well as tons more). This project aims to similarly practice implementing data compression in hardware. Specifically, I am implementing a Huffman coder and an rANS coder in hardware. Due to the mountain of existing implementations for these schemes and their many variants, I am not expecting these implemementations to be particularly novel, but I do expect they will be good practice and can also serve to illustrate the tradeoffs of implementing in the hardware domain vs. the software domain.
 
