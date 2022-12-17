@@ -46,32 +46,53 @@ The Huffman implementation is fairly simple, but still worth explaining, as it i
 #### Encoder-side
 Encoding for a Huffman coder is straightforward, but it's first worth defining our inputs/outputs/etc. so that we can reason about how our module stands alone or fits into other hardware. For input, we assume we have access to a stream of symbols, perhaps given in parallel cycle-by-cycle. Ideally, we want to be able to feed new symbols in every clock cycle, so our module should work (pipelined or otherwise) to have a throughput equal to our input. Lastly, we want to output a serialized set of symbols such that we can easily read out the encoding data. 
 
-Now that we've defined how this module integrates with its surroundings we can discuss the internals. As mentioned previously we assume that we have access to an externally-supplied stream of symbols, then we split these symbols many ways and encode them in parallel via lookup table. Doing this in hardware allows for a very high degree of parallelization (though SIMD instructions manage similarly). Lastly, the main important concern for the encoding side is re-serializing the data for storage/communication and eventual decoding. In this code, parallelized encoding is done in the `[huff_encoder_atom](verilog/huff_encoder_atom.sv)` blocks, which are managed by the more general `[huff_encoder](verilog/huff_encoder.sv)` block, which coordinates the atoms and manages data flow. We also define a `[symbol_lut](verilog/symbol_lut.sv)`, which is really just a plug-and-play memory block that we use across all the implementations.
+Now that we've defined how this module integrates with its surroundings we can discuss the internals. As mentioned previously we assume that we have access to an externally-supplied stream of symbols, then we split these symbols many ways and encode them in parallel via lookup table. Doing this in hardware allows for a very high degree of parallelization (though SIMD instructions manage similarly). Lastly, the main important concern for the encoding side is re-serializing the data for storage/communication and eventual decoding. In this code, parallelized encoding is done in the [huff_encoder_atom](verilog/huff_encoder_atom.sv) blocks, which are managed by the more general [huff_encoder](verilog/huff_encoder.sv) block, which coordinates the atoms and manages data flow. I also define a [symbol_lut](verilog/symbol_lut.sv), which is really just a plug-and-play memory block that we use across all the implementations.
 
+#### Decoder-side
 Next is decoding for the Huffman coder. While there are many ways of implementing a Huffman decoder (one straightforward option would be to use a lookup table similar to the encoder), I was drawn to an old [solution](#1) that used a finite state machine to do the decoding, using the prefix-free property of Huffman codes to read the bitstream bit-by-bit and parse out symbols via state evolution. It's worth noting that this isn't a particularly throughput-optimized implementation (in contrast to the encoder). Instead, this implementation is designed more for logical simplicity / space efficiency. I chose it instead of a repeat of the LUT-based solution to illustrate (and practice) the range of solutions in this space.
 
-Supporting the hardware implementation of the Huffman coder (and the rANS coder that follows), I've been working on a test harness that instantiates a functionally equivalent coder using the [stanford_compression_library](https://github.com/kedartatwawadi/stanford_compression_library/) and compares the encoded and decoded data to guarantee the functionality of the hardware implementation.
+In more concrete terms, the decoder works by reading the input encoded data bit-by-bit. As each bit is read, it is appended to an internal state of the decoder. As soon as the decoder state matches a known encoding, the state is reset and the encoding is copied to the output.
 
-## Optimization demo
+TODO: Expand on self-synchronizing parallelization.
+
+### rANS
+
+#### Encoder-side
+
+###### Computational Optimizations to rANS encoding
 
 ```python
+# original code
 def rans_base_encode_step(x,s):
    x_next = (x//freq[s])*M + cumul[s] + x%freq[s]
    return x_next
    
+# let inv_freq[s] = 1/freq[s]
+# avoiding division and modulus makes the hardware much simpler
 def rans_base_encode_step(x,s):
    div = int(x*inv_freq[s])
    x_next = M*div + cumul[s] + x - div*freq[s]
    return x_next
    
+# let r = log2(M)
+# turning a multiplication into a bitshift basically removes a
+# calculation step in hardware
 def rans_base_encode_step(x,s):
    div = int(x*inv_freq[s])
    x_next = div<<r + cumul[s] + x - div*freq[s]
    return x_next
 ```
- 
+
+#### Decoder-side
+
+### Verification and Testing
+
+Supporting the hardware implementation of the Huffman coder (and the rANS coder that follows), I've been working on a test harness that instantiates a functionally equivalent coder using the [stanford_compression_library](https://github.com/kedartatwawadi/stanford_compression_library/) and compares the encoded and decoded data to guarantee the functionality of the hardware implementation.
+
 ## Results and Conclusions
- 
+
+
+
 ## References (Fuller Version)
 
 <a id="1">[1]</a> 
