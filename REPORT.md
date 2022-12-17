@@ -27,6 +27,10 @@ After the huge amount of existing resources on hardware Huffman coders, I was a 
 
 [An FPGA-Based LOCO-ANS Implementation for Lossless and Near-Lossless Image Compression Using High-Level Synthesis](#4)
 
+I also later found this really cool paper which discusses how to do effective Huffman decoder parallelization on GPUs (which similarly applies to hardware.
+
+[Massively Parallel Huffman Decoding on GPUs](#5)
+
 Here's a few more papers I've looked at that go through software implementations but that have some application to hardware:
 
 
@@ -61,9 +65,11 @@ Now that we've examined the Huffman coder and its implementation in hardware, we
 
 #### Encoder-side
 
-TODO: Talk about computational optimizations.
+As mentioned earlier, we can't rely on heavy parallelization in rANS. Instead, our first direction for improvement (and a common choice in both software and hardware performance optimization) will be to rework our computations into simpler ones. Before getting into specifics, I've included a block diagram of what data flow looks like in an rANS encoder (which I conveniently had left over from the presentation).
 
 ![block diagram of the rANS encoder](imgs/rANS_encoding_diagram.png)
+
+As we can see in the diagram above, encoding has two steps that get repeated until we run out of symbols: `shrink_state` and `base_encode_step`. Shrink state is just a variable bitshift, so base_encode_step is our main target of optimization. Moreover, it turns out `base_encode_step` is a great target for this -- it has both divisions and moduli, which are hard in hardware. So instead, we precompute what we can and rearrange operations! To illustrate this, I've shown how these optimizations look in software (which is fairly equivalent to the hardware here).
 
 ###### Computational Optimizations to rANS encoding
 
@@ -73,13 +79,15 @@ def rans_base_encode_step(x,s):
    x_next = (x//freq[s])*M + cumul[s] + x%freq[s]
    return x_next
    
+# improvement step 1
 # let inv_freq[s] = 1/freq[s]
 # avoiding division and modulus makes the hardware much simpler
 def rans_base_encode_step(x,s):
    div = int(x*inv_freq[s])
    x_next = M*div + cumul[s] + x - div*freq[s]
    return x_next
-   
+  
+# improvement step 2
 # let r = log2(M)
 # turning a multiplication into a bitshift basically removes a
 # calculation step in hardware
@@ -89,7 +97,9 @@ def rans_base_encode_step(x,s):
    return x_next
 ```
 
-TODO: Talk about scheduling optimizations.
+As can be seen, we turned a division and a modulus into two multiplications. Unfortunately, one multiplication relies on the other, so we've introduced a data dependency -- but this is still better than having to perform division and modulus. This is the extent of the algebraic optimizations I implemented in my rANS coder, but I'll document any additional ones that I find and incorporate.
+
+There is one more type of optimization I was able to introduce to the hardware implementation which is a bit more hardware-specific. As it turns out, the logic for the `base_encode_step` doesn't strictly depend on `shrink_state`. Since the shrunken state is only used in addition and multiplications (which are commutative with bitshifting), we can parallelize `shrink_state` and the beginning of the `base_encode_step`. Since `base_encode_step` is the heavier burden on cycle time (through the multiplications), this means we can basically optimize `shrink_state` time out of our throughput.
 
 #### Decoder-side
 
@@ -116,3 +126,6 @@ Taeyeon Lee and Jaehong Park, "Design and implementation of static Huffman encod
 
 <a id="4">[4]</a> 
 T. Alonso, G. Sutter, and J. E. López de Vergara, “An FPGA-Based LOCO-ANS Implementation for Lossless and Near-Lossless Image Compression Using High-Level Synthesis,” Electronics, vol. 10, no. 23, p. 2934, Nov. 2021, doi: 10.3390/electronics10232934. [Online]. Available: http://dx.doi.org/10.3390/electronics10232934
+
+<a id="5">[5]</a>
+André Weißenberger and Bertil Schmidt. 2018. Massively Parallel Huffman Decoding on GPUs. In Proceedings of the 47th International Conference on Parallel Processing (ICPP 2018). Association for Computing Machinery, New York, NY, USA, Article 27, 1–10. https://doi.org/10.1145/3225058.3225076
