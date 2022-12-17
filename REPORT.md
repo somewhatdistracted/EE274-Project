@@ -57,7 +57,11 @@ TODO: Expand on self-synchronizing parallelization.
 
 ### rANS
 
+Now that we've examined the Huffman coder and its implementation in hardware, we can reason a bit about how we would implement rANS in hardware. Something worth noting right from the beginning is that we can no longer heavily rely on parallelization. With Huffman codes, an input datastream could be (somewhat) easily partitioned spatially, letting us work on encoding/decoding multiple symbols at a time. With rANS, this becomes a little more difficult, because each state is dependent on the previous state. However, there are still many places to search for optimizations. We'll begin with the encoder.
+
 #### Encoder-side
+
+TODO: Talk about computational optimizations.
 
 ###### Computational Optimizations to rANS encoding
 
@@ -83,7 +87,11 @@ def rans_base_encode_step(x,s):
    return x_next
 ```
 
+TODO: Talk about scheduling optimizations.
+
 #### Decoder-side
+
+TODO: Talk about computational optimizations.
 
 ### Verification and Testing
 
@@ -91,7 +99,7 @@ Supporting the hardware implementation of the Huffman coder (and the rANS coder 
 
 ## Results and Conclusions
 
-
+TODO: Fill.
 
 ## References (Fuller Version)
 
