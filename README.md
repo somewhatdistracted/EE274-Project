@@ -9,7 +9,7 @@ This repo blew up a bit as I was flushing my local stuff and preparing it for sh
 
 #### Writing and guides
 
-In addition to this README, I prepared both a [milestone](MILESTONE.md) and [final report](REPORT.md) for this project. I hope to add some usage/verification guidance in specific READMEs, but that may have to come later.
+In addition to this README, I prepared both a [milestone](MILESTONE.md) and [final report](REPORT.md) for this project. I hope to add some usage/verification guidance in specific READMEs, but that may have to come later. Also, my [presentation](https://docs.google.com/presentation/d/1ePWbsySpJ8HzIQ9NeXeXHjFsp2yc84qS68RiVC_vdvc/edit?usp=sharing) can be found at the link in case it's useful as well.
 
 #### Code
 
