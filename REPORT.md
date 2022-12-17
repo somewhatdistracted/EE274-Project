@@ -115,7 +115,7 @@ Supporting the hardware implementation of the Huffman coder (and the rANS coder 
 
 ## Results and Conclusions
 
-TODO: Fill.
+This project was a lot of fun to implement, and it was a good opportunity to learn more about hardware optimization and Huffman/rANS coders. That said, I was hoping to have been able to generate more results than I have managed so far. Initially, I was hoping to have an FPGA implementation of the Huffman/rANS coders, which would give actual throughputs, clock speeds, power consumption, etc. and would all be directly comparable to software profiling of those same algorithms. I haven't yet managed to do an FPGA implementation, though I hope to in the future, classwork notwithstanding. As it stands, my results are limited to my implementations and their behavior in simulation, but they do at least serve to illustrate how the performance optimizations described in the methods section work in practice.
 
 ## References (Fuller Version)
 
