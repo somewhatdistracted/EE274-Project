@@ -57,7 +57,11 @@ Next is decoding for the Huffman coder. While there are many ways of implementin
 
 In more concrete terms, the decoder works by reading the input encoded data bit-by-bit. As each bit is read, it is appended to an internal state of the decoder. As soon as the decoder state matches a known encoding, the state is reset and the encoding is copied to the output.
 
-TODO: Expand on self-synchronizing parallelization.
+Furthermore, I learned from [this paper](#5) that Huffman codes have a property (in expectation, and we can design for it) called *self-synchronization*, which enables a neat way of doing parallel decoding. Basically, if a decoder of a self-synchronizing code starts decoding at a random point in the bitstream, we expect that it will -- after a few erroneous decodings -- start decoding the actual symbols of the code. I borrowed the following figure from the paper which helps illustrate the concept:
+
+![self-synchronizing diagram](imgs/huff_self_synchronization.png)
+
+What this implies is that we can parallelize Huffman decoding, even if we don't know the encoding splits. Relying on this property, we have a bunch of decoders start decoding at evenly spaced intervals, and let them decode into each other's intervals. Then we stitch the actual decoded symbols back together starting at the points where two decoders agree on a decoding. I wasn't able to get this type of parallel decoding working in the current implementation, but I'll update this if I get it working.
 
 ### rANS
 
@@ -111,7 +115,7 @@ Supporting the hardware implementation of the Huffman coder (and the rANS coder 
 
 ## Results and Conclusions
 
-TODO: Fill.
+This project was a lot of fun to implement, and it was a good opportunity to learn more about hardware optimization and Huffman/rANS coders. That said, I was hoping to have been able to generate more results than I have managed so far. Initially, I was hoping to have an FPGA implementation of the Huffman/rANS coders, which would give actual throughputs, clock speeds, power consumption, etc. and would all be directly comparable to software profiling of those same algorithms. I haven't yet managed to do an FPGA implementation, though I hope to in the future, classwork notwithstanding. As it stands, my results are limited to my implementations and their behavior in simulation, but they do at least serve to illustrate how the performance optimizations described in the methods section work in practice.
 
 ## References (Fuller Version)
 
