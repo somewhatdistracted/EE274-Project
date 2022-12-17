@@ -10,17 +10,42 @@ module rans_encoder
     input rst_n,
     input config_en,
     input [SYMBOL_WIDTH-1:0] symbol,
-    input [ENC_MAX_WIDTH-1:0] config_enc,
-    input [ENC_MAX_LEN_WIDTH-1:0] config_enc_len,
-    input [NUM_SYMBOLS-1:0] config_select,
     output reg [ENC_MAX_WIDTH-1:0] enc,
     output reg [ENC_MAX_LEN_WIDTH-1:0] enc_len
 );
 
     localparam LOG_H = LOG_M * $clog2(CONST_T) + 1;
 
-    reg [LOG_H-1:0] freq_inv_lut [NUM_SYMBOLS-1:0];
-    reg [LOG_M-1:0] cumul_lut [NUM_SYMBOLS-1:0];
+    reg [STATE_WIDTH-1:0] state;
+
+    // LUTs for freq_inv[s] and cumul[s]
+    symbol_lut #(
+        .SYMBOL_WIDTH(SYMBOL_WIDTH),
+        .SYMBOL_COUNT(NUM_SYMBOLS),
+        .OUTPUT_WIDTH(LOG_H)
+    ) freq_inv_lut (
+        .clk(clk),
+        .rst_n(rst_n),
+        .config_en(config_en),
+        .config_symbol(),
+        .config_output(),
+        .symbol(),
+        .out()
+    );
+
+    symbol_lut #(
+        .SYMBOL_WIDTH(SYMBOL_WIDTH),
+        .SYMBOL_COUNT(NUM_SYMBOLS),
+        .OUTPUT_WIDTH(LOG_M)
+    ) cumul_lut (
+        .clk(clk),
+        .rst_n(rst_n),
+        .config_en(config_en),
+        .config_symbol(),
+        .config_output(),
+        .symbol(),
+        .out()
+    );
 
     always @(*) begin
         if (rst_n == 1'b1) begin

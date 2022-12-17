@@ -1,5 +1,5 @@
 
-module symbol_buffer
+module symbol_lut
 #(
     parameter SYMBOL_WIDTH = 4,
     parameter SYMBOL_COUNT = 16,
