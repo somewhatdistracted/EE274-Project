@@ -63,6 +63,8 @@ Now that we've examined the Huffman coder and its implementation in hardware, we
 
 TODO: Talk about computational optimizations.
 
+![block diagram of the rANS encoder](imgs/rANS_encoding_diagram.png)
+
 ###### Computational Optimizations to rANS encoding
 
 ```python
