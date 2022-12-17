@@ -15,6 +15,7 @@ In addition to this README, I prepared both a [milestone](MILESTONE.md) and [fin
 
 The code in this repo breaks down three ways. First, my SystemVerilog implementations of Huffman and rANS coders can be found in [verilog](verilog). Second, hardware verification module code can be found in the [verification](dv) folder. Lastly, I also used the software implementations of these coders in [Stanford Compression Library](stanford_compression_library) as part of my development/verification process.
 
+**Unfortunately, all of the hardware implementations require licensed software to run (even in simulation).** I use Synopsys VCS for simulation, which is available on the Stanford caddy machines, but I wanted to note this because it's currently a bit of work to get these implementations running (and I haven't even laid out a repeatable flow for synthesis/implementation to FPGA). I'm throwing together a Makefile which will hopefully be able to make this easier, but at time of writing a user will need some additional software/scripts that I can't add to the repo to run the code.
 
 ## Progress
 
@@ -26,13 +27,13 @@ The code in this repo breaks down three ways. First, my SystemVerilog implementa
 - [x] Implemented parallel coder
 - [ ] Test coverage of parallel coder
 
-#### Test Harness
- - [ ] Python code to run Stanford Compression Library and generate gold standard
- - [ ] Make/script to run gold/sim and check for correctness
-
 #### rANS
 - [x] Implemented simple atomic encoder
 - [x] Implemented decoder
+
+#### Test Harness
+ - [ ] Python code to run Stanford Compression Library and generate gold standard
+ - [ ] Make/script to run gold/sim and check for correctness
 
 ## References (kept these as acknowledgements for materials I consulted while working on this project)
 
